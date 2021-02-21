@@ -47,6 +47,7 @@ Route::prefix('questioner')->name('questioner.')->group(function () {
     });
 
     Route::post('login', [SurveyorController::class, 'login'])->name('start');
+    Route::post('register', [SurveyorController::class, 'register'])->name('register-start');
 
     Route::middleware(['questioner.check_nik'])->group(function () {
         Route::get('start-questioner', [SurveyorController::class, 'startQuestioner'])->name('ongoing');

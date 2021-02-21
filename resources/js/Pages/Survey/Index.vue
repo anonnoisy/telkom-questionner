@@ -40,7 +40,7 @@
                             <td class="border-t">
                                 <inertia-link
                                     class="px-6 py-4 flex items-center focus:text-indigo-500"
-                                    :href="route('surveys.edit', survey.id)"
+                                    :href="route('surveys.show', survey.id)"
                                 >
                                     {{ survey.name }}
                                     <icon
@@ -53,7 +53,7 @@
                             <td class="border-t">
                                 <inertia-link
                                     class="px-6 py-4 flex items-center"
-                                    :href="route('surveys.edit', survey.id)"
+                                    :href="route('surveys.show', survey.id)"
                                     tabindex="-1"
                                 >
                                     {{
@@ -64,7 +64,7 @@
                             <td class="border-t">
                                 <inertia-link
                                     class="px-6 py-4 flex items-center"
-                                    :href="route('surveys.edit', survey.id)"
+                                    :href="route('surveys.show', survey.id)"
                                     tabindex="-1"
                                 >
                                     {{ survey.opening_time == null ? "Always Open" : survey.opening_time }}
@@ -73,7 +73,7 @@
                             <td class="border-t w-px">
                                 <inertia-link
                                     class="px-4 flex items-center"
-                                    :href="route('surveys.edit', survey.id)"
+                                    :href="route('surveys.show', survey.id)"
                                     tabindex="-1"
                                 >
                                     <icon

@@ -8,6 +8,7 @@ use App\Models\QuestionType;
 use App\Models\ResponseChoice;
 use App\Models\Survey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -101,10 +102,16 @@ class SurveyController extends Controller
      */
     public function show($id)
     {
+        $survey = Survey::where('id', $id)->with([
+            'group.respondents.unit',
+            'group.respondents.responses'
+        ])->first();
+
         return Inertia::render('Survey/Show', [
-            'survey' => Survey::where('id', $id)
-                ->with('questions')
-                ->first(),
+            'survey' => $survey,
+            'responses' => $survey->responses,
+            'group' => $survey->group,
+            'respondents' => $survey->group->respondents->groupBy('unit_name'),
         ]);
     }
 

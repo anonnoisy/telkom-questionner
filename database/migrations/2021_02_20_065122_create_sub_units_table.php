@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRespondentsTable extends Migration
+class CreateSubUnitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateRespondentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('respondents', function (Blueprint $table) {
+        Schema::create('sub_units', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('nik')->unique();
-            $table->string('objid_posisi')->nullable();
-            $table->string('jabatan')->nullable();
-            $table->string('band')->nullable();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreateRespondentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('respondents');
+        Schema::dropIfExists('sub_units');
     }
 }

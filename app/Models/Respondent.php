@@ -16,9 +16,10 @@ class Respondent extends Model
         'objid_posisi',
         'jabatan',
         'band',
-        'lokasi_kerja',
-        'sub_unit',
-        'unit',
+        'lokasi_kerja_id',
+        'sub_unit_id',
+        'unit_id',
+        'unit_name'
     ];
 
     public function scopeFilter($query, array $filters)
@@ -37,10 +38,26 @@ class Respondent extends Model
     }
 
     public function responses() {
-        return $this->hasMany(Survey::class);
+        return $this->hasMany(Response::class);
     }
 
     public function groups() {
         return $this->belongsToMany(Group::class, 'respondent_groups');
+    }
+
+    public function getUnitNameAttribute() {
+        return $this->unit->name;
+    }
+
+    public function lokasi_kerja() {
+        return $this->belongsTo(LokasiKerja::class);
+    }
+
+    public function sub_unit() {
+        return $this->belongsTo(SubUnit::class);
+    }
+
+    public function unit() {
+        return $this->belongsTo(Unit::class);
     }
 }

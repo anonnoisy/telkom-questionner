@@ -6,7 +6,7 @@
 
         <jet-validation-errors class="mb-4" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div class="mb-4 font-medium text-sm">
             Participant Register
         </div>
 
@@ -16,12 +16,19 @@
                 <jet-input id="nik" type="number" class="mt-1 block w-full py-1 pl-1" v-model="form.nik" required autofocus />
             </div>
             <div class="mt-3">
-                <jet-label for="phone" value="No Telepon" />
-                <jet-input id="phone" type="number" class="mt-1 block w-full py-1 pl-1" v-model="form.phone" required autofocus />
-            </div>
-            <div class="mt-3">
-                <jet-label for="unit" value="Unit" />
-                <jet-input id="unit" type="text" class="mt-1 block w-full py-1 pl-1" v-model="form.unit" required autofocus />
+                <select-input
+                    v-model="form.unit_id"
+                    :error="errors.unit_id"
+                    label="Unit"
+                >
+                    <option :value="null">Select Unit</option>
+                    <option
+                        v-for="unit in units"
+                        :key="unit.id"
+                        :value="unit.id"
+                        >{{ unit.name }}</option
+                    >
+                </select-input>
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -45,6 +52,7 @@
     import JetCheckbox from '@/Jetstream/Checkbox'
     import JetLabel from '@/Jetstream/Label'
     import JetValidationErrors from '@/Jetstream/ValidationErrors'
+    import SelectInput from "@/Shared/SelectInput"
 
     export default {
         components: {
@@ -54,12 +62,15 @@
             JetInput,
             JetCheckbox,
             JetLabel,
+            SelectInput,
             JetValidationErrors
         },
 
         props: {
+            errors: Object,
             survey_name: String,
             group_name: String,
+            units: Array,
             create_url: String,
         },
 
@@ -67,17 +78,16 @@
             return {
                 form: this.$inertia.form({
                     nik: null,
-                    phone: null,
-                    unit: null,
+                    unit_id: null,
                     survey_name: this.survey_name,
-                    groupe_name: this.groupe_name,
+                    group_name: this.group_name,
                 })
             }
         },
 
         methods: {
             submit() {
-                this.form.post(this.route('questioner.register'), {
+                this.form.post(this.route('questioner.register-start'), {
                         onFinish: () => this.form.reset('password'),
                     })
             }

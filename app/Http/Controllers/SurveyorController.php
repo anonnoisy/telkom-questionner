@@ -7,7 +7,9 @@ use App\Models\Respondent;
 use App\Models\Response;
 use App\Models\Survey;
 use App\Models\SurveyResponse;
+use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -30,8 +32,9 @@ class SurveyorController extends Controller
     public function registerView(Request $request)
     {
         return Inertia::render('Questioner/Register', [
-                'survey_name' => $request->survey_name,
-                'group_name' => $request->group_name,
+                'survey_name' => $request->survey,
+                'group_name' => $request->group,
+                'units' => Unit::all(),
                 'create_url' => URL::route('questioner.login', [
                     'survey' => $request->survey ?? null,
                     'group' => $request->group ?? null,
@@ -53,6 +56,17 @@ class SurveyorController extends Controller
             return redirect()
                 ->back()
                 ->with('message', 'You are not in the survey, maybe you need to register first');
+        }
+
+        $response = DB::table('responses')
+            ->where('respondent_id', $respondent->id)
+            ->first();
+
+        if (!empty($response->completed_at)) {
+            return redirect()->route('questioner.sorry', [
+                'survey' => $request->survey,
+                'group' => $request->group,
+            ]);
         }
 
         $survey = Survey::where('name', $request->survey_name)
@@ -81,9 +95,15 @@ class SurveyorController extends Controller
         }
 
         Validator::make($request->all(), [
-            'name' => 'nullable|string',
             'nik' => 'required|integer',
         ])->validate();
+
+        $respondent = Respondent::where('nik', $request->nik)->first();
+        if (!empty($respondent)) {
+            return redirect()
+                ->back()
+                ->with('message', 'you have registered as a participant, please login below.');
+        }
 
         $respondent = Respondent::create([
             'name' => $request->name ?? NULL,
@@ -91,12 +111,12 @@ class SurveyorController extends Controller
             'objid_posisi' => $request->objid_posisi ?? NULL,
             'jabatan' => $request->jabatan ?? NULL,
             'band' => $request->band ?? NULL,
-            'lokasi_kerja' => $request->lokasi_kerja ?? NULL,
-            'sub_unit' => $request->sub_unit ?? NULL,
-            'unit' => $request->unit ?? NULL,
+            'lokasi_kerja_id' => $request->lokasi_kerja_id ?? NULL,
+            'sub_unit_id' => $request->sub_unit_id ?? NULL,
+            'unit_id' => $request->unit_id ?? NULL,
         ]);
 
-        $this->group->respondents()->attach($respondent->id);
+        $group->respondents()->attach($respondent->id);
 
         return redirect()->route('questioner.start', [
             'survey' => $request->survey_name,
